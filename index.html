@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Julia Grace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d1a;
+      --surface: #13132a;
+      --text: #f0eeff;
+      --muted: #8b85b0;
+      --accent: #7c6af7;
+      --accent-soft: rgba(124, 106, 247, 0.15);
+      --border: rgba(124, 106, 247, 0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 5rem 0 3rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      line-height: 1.05;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .tagline {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.8;
+    }
+
+    .tagline strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+      margin: 3rem 0;
+      opacity: 0.6;
+    }
+
+    /* ── About ── */
+    .about {
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .about p {
+      font-size: 1.05rem;
+      color: #c5c0b6;
+      margin-bottom: 1.2rem;
+      max-width: 640px;
+    }
+
+    .about p:first-child::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.2rem;
+      float: left;
+      line-height: 0.8;
+      margin-right: 0.1em;
+      margin-top: 0.1em;
+      color: var(--accent);
+    }
+
+    /* ── Stats row ── */
+    .stats {
+      display: flex;
+      gap: 0;
+      margin: 3rem 0;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      animation: fadeUp 0.8s 0.25s ease both;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 1.6rem 1.4rem;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--accent);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Timeline / Experience ── */
+    .section-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+    }
+
+    .roles {
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .role {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem 2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .role:last-child { border-bottom: none; }
+
+    .role-company {
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+    }
+
+    .role-title {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .role-years {
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+      padding-top: 0.15rem;
+    }
+
+    /* ── Links ── */
+    .links {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+      padding-bottom: 5rem;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+
+    .link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-decoration: none;
+      background: var(--surface);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .link-pill:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .link-pill svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Animation ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 540px) {
+      .stats { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .role { grid-template-columns: 1fr; }
+      .role-years { margin-top: -0.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <p class="eyebrow">Julia Grace</p>
+      <h1>Building AI products that<br><em>surprise &amp; delight.</em></h1>
+    </header>
+
+    <div class="divider"></div>
+
+    <section class="about">
+      <p>I've spent my career at the intersection of complex, distributed systems (and most recently AI systems and infrastructure) and the unglamorous, essential work of turning them into products in the hands of real users. That means building the teams, systems, and culture that can turn a research paper or prototype into a product experience at a global scale.</p>
+      <p>At Apple, I was a Senior Director of Engineering in AI/ML, focused on turning advanced ML research into products used by hundreds of millions of people. I spent time on Siri, Search, and World Knowledge.</p>
+      <p>Before Apple, I led a 400+ engineer organization at Netflix responsible for search, personalization, and ML platform for 230M+ members. Before that, I spent four years at Slack scaling infrastructure through hypergrowth — from 10 engineers to 100+, and from $105M to $401M in revenue. I've also co-founded two companies, which taught me more about shipping than anything else.</p>
+      <p>My research background is in distributed systems and human-computer interaction. I published eight peer-reviewed papers at IBM Almaden Research. Old habits die hard: I still think about systems at the level of how humans and machines actually interact.</p>
+      <p>I have a BS with Honors and an MS in Computer Science from the University of North Carolina at Chapel Hill. I started programming on a Commodore 64 when I was 14.</p>
+      <p>I'm a runner, a chef, a programmer, and a parent, and I love figuring out how things work.</p>
+    </section>
+
+    <section class="roles">
+      <p class="section-title">Experience</p>
+
+      <div class="role">
+        <div>
+          <div class="role-company">Apple</div>
+          <div class="role-title">Senior Director of Engineering, AI/ML</div>
+        </div>
+        <div class="role-years">2023 – 2026</div>
+      </div>
+
+      <div class="role">
+        <div>
+          <div class="role-company">Netflix</div>
+          <div class="role-title">Vice President of Engineering</div>
+        </div>
+        <div class="role-years">2021 – 2023</div>
+      </div>
+
+      <div class="role">
+        <div>
+          <div class="role-company">Apple</div>
+          <div class="role-title">Director of Engineering (Siri)</div>
+        </div>
+        <div class="role-years">2019 – 2021</div>
+      </div>
+
+      <div class="role">
+        <div>
+          <div class="role-company">Slack</div>
+          <div class="role-title">Senior Director of Engineering</div>
+        </div>
+        <div class="role-years">2015 – 2019</div>
+      </div>
+
+      <div class="role">
+        <div>
+          <div class="role-company">Tindie</div>
+          <div class="role-title">Co-founder & CTO <span style="color: var(--accent); font-size:0.8em;">(acquired)</span></div>
+        </div>
+        <div class="role-years">2012 – 2015</div>
+      </div>
+
+      <div class="role">
+        <div>
+          <div class="role-company">IBM Research</div>
+          <div class="role-title">Software Engineer & Tech Lead</div>
+        </div>
+        <div class="role-years">2006 – 2011</div>
+      </div>
+    </section>
+
+    <div class="links">
+      <!-- Update href values with your real links -->
+      <a href="https://www.linkedin.com/in/juliagrace" class="link-pill" target="_blank" rel="noopener">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+      <a href="/cdn-cgi/l/email-protection#5b313e2c3e37323a1b3c363a323775383436" class="link-pill">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+        Email
+      </a>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      Julia Grace · Mountain View, CA
